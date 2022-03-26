@@ -7,6 +7,7 @@ Feel free to use and/or modify them to help you develop your program.
 """
 
 from itertools import islice
+import queue
 
 def apply_ansi(str, bold=True, color=None):
     """
@@ -146,3 +147,42 @@ def print_board(n, board_dict, message="", ansi=False, **kwargs):
 
     # Print to terminal (with optional args forwarded)
     print(output, **kwargs)
+
+class Node:
+    def __init__(self, state, parent, action, cost):
+        self.state = state
+        self.parent = parent
+        self.action = action
+        self.cost = cost
+
+class PriorityQueue:
+    def __init__(self):
+        self.queue = []
+        self.priority = []
+
+    def add(self, node):
+        self.queue.append(node)
+        self.priority.append(node.cost)
+
+    def empty(self):
+        return len(self.queue) == 0
+
+    def contain(self, state):
+        return any(node.state == state for node in self.queue)
+
+    def remove(self):
+        if self.empty():
+            print("Empty queue")
+            return
+        else:
+            # look for node with smallest priority value
+            index = 0
+            min = self.priority[0]
+            for i in range(len(self.priority)):
+                if self.priority[i] < min:
+                    min = self.priority[i]
+                    index = i
+        
+        node = self.priority[index]    
+        
+        return node
