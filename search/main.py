@@ -28,3 +28,23 @@ def main():
     # Why not start by trying to print this configuration out using the
     # `print_board` helper function? (See the `util.py` source code for
     # usage information).
+
+    ## Create necessary variables tor inputs to our functions
+    # Getting the grid with occupied cells as 1 and rest as 0
+    grid = [[0]*data["n"] for i in range(data["n"])]
+    for b,x,y in data["board"]:
+        grid[x][y] = 1
+    
+    # Start position, Goal position
+    start = data["start"]
+    goal = data["goal"]
+    
+    # Visited Nodes
+    visited = []
+    
+    # Path from Start to Finish
+    path = []
+    
+
+
+    
