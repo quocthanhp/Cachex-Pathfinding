@@ -36,8 +36,8 @@ def main():
         grid[x][y] = 1
     
     # Start position, Goal position
-    start = data["start"]
-    goal = data["goal"]
+    start = tuple(data["start"])
+    goal = tuple(data["goal"])
     
     # Visited Nodes
     visited = []
@@ -46,5 +46,9 @@ def main():
     path = []
     
 
+# Calculate estimated cost from current state to goal state using Manhattan distance
+def heuristic(curr_state, goal_state):
+    r1, q1 = curr_state
+    r2, q2 = goal_state
+    return abs(r1 - r2) + abs(q1 - q2)
 
-    
