@@ -7,6 +7,7 @@ Feel free to use and/or modify them to help you develop your program.
 """
 
 from itertools import islice
+from platform import node
 import queue
 
 def apply_ansi(str, bold=True, color=None):
@@ -158,31 +159,25 @@ class Node:
 class PriorityQueue:
     def __init__(self):
         self.queue = []
-        self.priority = []
 
     def add(self, node):
         self.queue.append(node)
-        self.priority.append(node.cost)
+        self.queue = sorted(self.queue, key=lambda node : node.cost) # sort based on cost of node
 
-    def empty(self):
+    def is_empty(self):
         return len(self.queue) == 0
 
     def contain(self, state):
-        return any(node.state == state for node in self.queue)
+        for node in self.queue:
+            if node.state == state:
+                return True
+        return False
 
     def remove(self):
-        if self.empty():
+        if self.is_empty():
             print("Empty queue")
             return
         else:
-            # look for node with smallest priority value
-            index = 0
-            min = self.priority[0]
-            for i in range(len(self.priority)):
-                if self.priority[i] < min:
-                    min = self.priority[i]
-                    index = i
-        
-        node = self.priority[index]    
-        
+            node = self.queue[0]
+            self.queue = self.queue[1:]  
         return node
