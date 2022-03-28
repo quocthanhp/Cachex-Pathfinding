@@ -8,7 +8,6 @@ Feel free to use and/or modify them to help you develop your program.
 
 from itertools import islice
 from platform import node
-import queue
 
 def apply_ansi(str, bold=True, color=None):
     """
@@ -150,10 +149,9 @@ def print_board(n, board_dict, message="", ansi=False, **kwargs):
     print(output, **kwargs)
 
 class Node:
-    def __init__(self, state, parent, action, cost):
+    def __init__(self, state, parent, cost):
         self.state = state
         self.parent = parent
-        self.action = action
         self.cost = cost
 
 class PriorityQueue:
@@ -167,13 +165,7 @@ class PriorityQueue:
     def is_empty(self):
         return len(self.queue) == 0
 
-    def contain(self, state):
-        for node in self.queue:
-            if node.state == state:
-                return True
-        return False
-
-    def remove(self):
+    def pop(self):
         if self.is_empty():
             print("Empty queue")
             return
