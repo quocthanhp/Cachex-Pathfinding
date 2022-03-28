@@ -52,3 +52,5 @@ def heuristic(curr_state, goal_state):
     r2, q2 = goal_state
     return abs(r1 - r2) + abs(q1 - q2)
 
+
+
