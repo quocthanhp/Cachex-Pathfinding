@@ -121,15 +121,26 @@ def get_neighbors(state, grid):
 def convert_hex_points(r,q):
     """
     Transform points to hexagonal points for accurate distance calculations
+    
     Got information from "Size and Spacing" section 
         from https://www.redblobgames.com/grids/hexagons/
-    We will let the size of hexagon be 1 (from centre of hexagon to a corner of the hexagon)
-        H = 2 * size = 2
-        W = sqrt(3) * size = sqrt(3)
+    
+    We know that the Width is 1 because moving from one hexagon to another has a cost of 1
+        W = 1
+    
+    Given W, we find the SIZE of hexagon (from centre of hexagon to a corner of the hexagon)
+        W = sqrt(3) * SIZE = 1 --> SIZE = 1/sqrt(3)
+    
+    Now we can find the height
+        H = 2 * size = 2/sqrt(3)
+
     We assume the origin is the centre point of hexagon (0,0)
     """
-    HEIGHT = 0.75 * 2  #Distance of centre point of hexagon on one row to that of next row (3/4 H)
-    WIDTH = math.sqrt(3) #Distance of centre point of hexagon on one row to that of same row (W)
+    # Distance of centre point of hexagon on one row to that of next row (3/4 H)
+    HEIGHT = 2 / math.sqrt(3)
+
+    # Distance of centre point of hexagon on one row to that of same row (W)  
+    WIDTH = 1
     
     # Finding new point for r
     h_r = r * HEIGHT
