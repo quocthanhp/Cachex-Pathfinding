@@ -14,8 +14,7 @@ import json
 # If you want to separate your code into separate files, put them
 # inside the `search` directory (like this one and `util.py`) and
 # then import from them like this:
-from search.util import Node, PriorityQueue, print_board, print_coordinate
-
+from util import Node, PriorityQueue, print_board, print_coordinate
 
 def main():
     try:
@@ -38,7 +37,7 @@ def main():
     #   we will base it off hexagonal points to calculate and get accurate distances
     # This grid is just used to locate blocked hexagons
     grid = [[0]*data["n"] for i in range(data["n"])]
-    for b,x,y in data["board"]:
+    for _,x,y in data["board"]:
         grid[x][y] = 1
     
     # Start position, Goal position
@@ -65,7 +64,7 @@ def shortest_path(start, goal, grid):
         where our heuristic is the euclidean distance
     """
     # Initialise start node
-    node = Node(state=start, parent=None, cost=heuristic(start, goal), cost_g=0)
+    node = Node(state=start, parent=None, cost=0, cost_g=0)
     
     # Intialise frontier with start node added
     frontier = PriorityQueue()
@@ -106,7 +105,7 @@ def shortest_path(start, goal, grid):
             # Expand current node
             for state in get_neighbors(node.state, grid):
                 if state not in generate:
-                    neighbor = Node(state = state, parent = node, cost = heuristic(state, goal))
+                    neighbor = Node(state = state, parent = node, cost = heuristic(state, goal), cost_g = node.cost_g + 1)
                     frontier.add(neighbor)
 
 
