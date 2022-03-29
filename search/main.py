@@ -35,8 +35,8 @@ def main():
     ## Create necessary variables tor inputs to our functions
     # Getting the grid with occupied cells as 1 and rest as 0
     # Although grid is in square form, when calculating distances later, 
-    #   we will base it off hexagonal grid to calculate and get accurate distances
-    # This grid is just used to locate 
+    #   we will base it off hexagonal points to calculate and get accurate distances
+    # This grid is just used to locate blocked hexagons
     grid = [[0]*data["n"] for i in range(data["n"])]
     for b,x,y in data["board"]:
         grid[x][y] = 1
@@ -52,26 +52,18 @@ def main():
     path = []
 
     # Run the algorithm using Manhattan distance
-    
-    
-
-# Calculate estimated cost from current state to goal state using Manhattan distance
-def heuristic(curr_state, goal_state):
-    r1, q1 = curr_state
-    r2, q2 = goal_state
-    return abs(r1 - r2) + abs(q1 - q2)
 
 # Calculate estimated cost from current state to goal state using Euclidean distance
 def heuristic_alt(curr_state, goal_state)
-    r1, q1 = curr_state
-    r2, q2 = goal_state
+    r1, q1 = convert_hex_points(curr_state[0], curr_state[1])
+    r2, q2 = convert_hex_points(goal_state[0], goal_state[1])
     return math.sqrt( (r2-r1)**2 + (q2-q1)**2 )
 
 # Find the shortest path from start to goal
 def shortest_path(start, goal, grid):
     
     # Initialise start node
-    node = Node(state=start, parent=None, cost=heuristic(start, goal))
+    node = Node(state=start, parent=None, cost=heuristic(start, goal), cost_g=0)
     
     # Intialise frontier with start node added
     frontier = PriorityQueue()
@@ -82,6 +74,7 @@ def shortest_path(start, goal, grid):
 
     # Initialise empty solution
     solution = []
+    solution_cost = 0
 
     while not frontier.is_empty:
         node = frontier.pop()
@@ -92,40 +85,49 @@ def shortest_path(start, goal, grid):
                 solution.append(node.state)
                 node = node.parent
             solution.reverse()
-            return solution
+#CHECK            return solution
 
         # Mark node as already generated
         generate.add(node.state)
 
         # Expand current node
         for state in get_neighbors(node.state, grid):
-            if state not in generate:
+#CHECK           if state not in generate:
                 neighbor = Node(state=state, parent=node, cost= 1 + heuristic(state, goal))
                 frontier.add(neighbor)
 
-# Get every neighbor of node
+
+############################################################################################################
+# DONE FUNCTIONS #
+############################################################################################################
+
 def get_neighbors(state, grid):
+    """ Get every neighboring nodes of node """
     r, q = state
     n = len(grid)
     neighbors = []
-    possible_neighbors = [(r + 1, q), (r - 1, q), (r, q + 1), (r, q - 1),
-                          (r + 1, q + 1), (r - 1, q - 1)]
+    possible_neighbors = [(r+1, q), (r-1, q), 
+                            (r, q+1), (r, q-1),
+                            (r+1, q-1), (r-1, q+1)]
 
     # Check valid neighbors
     for (r, q) in possible_neighbors:
-        if 0 <= r < n - 1 and 0 <= q < n - 1 and grid[r][q] == 0:
+        if 0 <= r < (n - 1) and 0 <= q < (n - 1) and grid[r][q] == 0:
             neighbors.append((r, q))
 
     return neighbors
 
-# Transform points to hexagonal points for accurate distance calculations
-# Got information from "Size and Spacing" section 
-#   from https://www.redblobgames.com/grids/hexagons/
-# We will let the size of hexagon be 1 (from centre of hexagon to a corner of the hexagon)
-#   H = 2 * size = 2
-#   W = sqrt(3) * size = sqrt(3)
+############################################################################################################
 def convert_hex_points(r,q):
-    
+    """
+    Transform points to hexagonal points for accurate distance calculations
+    Got information from "Size and Spacing" section 
+        from https://www.redblobgames.com/grids/hexagons/
+    We will let the size of hexagon be 1 (from centre of hexagon to a corner of the hexagon)
+        H = 2 * size = 2
+        W = sqrt(3) * size = sqrt(3)
+    We assume the origin is the centre point of hexagon (0,0)
+    """
     HEIGHT = 0.75 * 2  #Distance of centre point of hexagon on one row to that of next row (3/4 H)
     WIDTH = math.sqrt(3) #Distance of centre point of hexagon on one row to that of same row (W)
     
@@ -138,7 +140,7 @@ def convert_hex_points(r,q):
     #       r * 0.5 * WIDTH --> shifts points according to which row its located in
     h_q = r * 0.5 * WIDTH + WIDTH 
 
-
+    return h_r, h_q
             
 
 

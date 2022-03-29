@@ -152,7 +152,8 @@ class Node:
     def __init__(self, state, parent, cost):
         self.state = state
         self.parent = parent
-        self.cost = cost
+        self.cost_g = parent.cost_g + 1
+        self.cost = cost + self.cost_g
 
 class PriorityQueue:
     def __init__(self):
