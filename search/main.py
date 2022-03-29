@@ -45,20 +45,25 @@ def main():
     start = tuple(data["start"])
     goal = tuple(data["goal"])
     
-    # Visited Nodes
-    visited = []
-    
-    # Path from Start to Finish
-    path = []
+    # Finding Shortest Path
+    path, path_cost = shortest_path(start, goal, grid)
 
-    # Run the algorithm using Manhattan distance
+    # Printing Solution
+    if not path:
+        print(0)
+    else:
+        print(path_cost)
+        for coord in path:
+            print(coord)
 
+### CHECK IF WE CAN HAVE A NEWLINE AFTER LAST COORD
 
-
-
-# Find the shortest path from start to goal
+### ACCOUNT FOR WHEN NO PATH FOUND AS WELLLLLL ##############
 def shortest_path(start, goal, grid):
-    
+    """
+    Finding the shortest path from start to goal using A* search 
+        where our heuristic is the euclidean distance
+    """
     # Initialise start node
     node = Node(state=start, parent=None, cost=heuristic(start, goal), cost_g=0)
     
@@ -90,22 +95,25 @@ def shortest_path(start, goal, grid):
                 if(node.cost < solution_cost):
                     final = False
             if final:
-                return solution
+                return solution, solution_cost
 
-        # Mark node as already generated
-        generate.add(node.state)
+### HOW TO RECALCULATE GENERATE LIST BECAUSE OTHER SOLUTIONS MAY OVERLAP
+        else:
 
-        # Expand current node
-        for state in get_neighbors(node.state, grid):
-#CHECK           if state not in generate:
-                neighbor = Node(state=state, parent=node, cost= 1 + heuristic(state, goal))
-                frontier.add(neighbor)
+            # Mark node as already generated
+            generate.add(node.state)
+
+            # Expand current node
+            for state in get_neighbors(node.state, grid):
+                if state not in generate:
+                    neighbor = Node(state = state, parent = node, cost = heuristic(state, goal))
+                    frontier.add(neighbor)
 
 
 ############################################################################################################
 # DONE FUNCTIONS #
 ############################################################################################################
-def heuristic(curr_state, goal_state)
+def heuristic(curr_state, goal_state):
     """ 
     Calculate estimated cost from current state to goal state using Euclidean distance
     """
