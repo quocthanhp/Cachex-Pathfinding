@@ -53,11 +53,8 @@ def main():
 
     # Run the algorithm using Manhattan distance
 
-# Calculate estimated cost from current state to goal state using Euclidean distance
-def heuristic_alt(curr_state, goal_state)
-    r1, q1 = convert_hex_points(curr_state[0], curr_state[1])
-    r2, q2 = convert_hex_points(goal_state[0], goal_state[1])
-    return math.sqrt( (r2-r1)**2 + (q2-q1)**2 )
+
+
 
 # Find the shortest path from start to goal
 def shortest_path(start, goal, grid):
@@ -79,13 +76,21 @@ def shortest_path(start, goal, grid):
     while not frontier.is_empty:
         node = frontier.pop()
         
-        # Check goal state
-        if node.state == goal:
+        # Check goal state and if solution cost is better than previously found ones
+        if node.state == goal and (node.cost_g < solution_cost or solution_cost == 0):
             while node.parent is not None:
                 solution.append(node.state)
                 node = node.parent
             solution.reverse()
-#CHECK            return solution
+            solution_cost = len(solution) - 1
+            
+            # Check if solution cost has lowest cost compared to other unexpanded nodes
+            for node in frontier.queue:
+                final = True
+                if(node.cost < solution_cost):
+                    final = False
+            if final:
+                return solution
 
         # Mark node as already generated
         generate.add(node.state)
@@ -100,9 +105,18 @@ def shortest_path(start, goal, grid):
 ############################################################################################################
 # DONE FUNCTIONS #
 ############################################################################################################
+def heuristic(curr_state, goal_state)
+    """ 
+    Calculate estimated cost from current state to goal state using Euclidean distance
+    """
+    r1, q1 = convert_hex_points(curr_state[0], curr_state[1])
+    r2, q2 = convert_hex_points(goal_state[0], goal_state[1])
+    return math.sqrt( (r2-r1)**2 + (q2-q1)**2 )
 
 def get_neighbors(state, grid):
-    """ Get every neighboring nodes of node """
+    """ 
+    Get every neighboring nodes of node
+    """
     r, q = state
     n = len(grid)
     neighbors = []
