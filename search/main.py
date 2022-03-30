@@ -14,7 +14,7 @@ import json
 # If you want to separate your code into separate files, put them
 # inside the `search` directory (like this one and `util.py`) and
 # then import from them like this:
-from util import Node, PriorityQueue, print_board, print_coordinate
+from search.util import Node, PriorityQueue, print_board, print_coordinate
 
 def main():
     try:
@@ -64,7 +64,7 @@ def shortest_path(start, goal, grid):
         where our heuristic is the euclidean distance
     """
     # Initialise start node
-    node = Node(state=start, parent=None, cost=0, cost_g=0)
+    node = Node(state=start, parent=None, cost=0, cost_g=1)
     
     # Intialise frontier with start node added
     frontier = PriorityQueue()
@@ -76,37 +76,47 @@ def shortest_path(start, goal, grid):
     # Initialise empty solution
     solution = []
     solution_cost = 0
+    
+    while not frontier.is_empty():
 
-    while not frontier.is_empty:
         node = frontier.pop()
         
         # Check goal state and if solution cost is better than previously found ones
-        if node.state == goal and (node.cost_g < solution_cost or solution_cost == 0):
+        if node.state == goal and (node.cost < solution_cost or solution_cost == 0):
+            # Clear previous solution 
+            solution = []
+
             while node.parent is not None:
                 solution.append(node.state)
                 node = node.parent
-            solution.reverse()
-            solution_cost = len(solution) - 1
             
+            # Make sure to add the root node into solution as well
+            solution.append(start)
+
+            solution.reverse()
+            solution_cost = len(solution)
+
             # Check if solution cost has lowest cost compared to other unexpanded nodes
+            final = True
             for node in frontier.queue:
-                final = True
                 if(node.cost < solution_cost):
                     final = False
+
             if final:
                 return solution, solution_cost
 
-### HOW TO RECALCULATE GENERATE LIST BECAUSE OTHER SOLUTIONS MAY OVERLAP
         else:
-
             # Mark node as already generated
             generate.add(node.state)
-
+       
             # Expand current node
             for state in get_neighbors(node.state, grid):
                 if state not in generate:
                     neighbor = Node(state = state, parent = node, cost = heuristic(state, goal), cost_g = node.cost_g + 1)
                     frontier.add(neighbor)
+    
+    # If no solutions just return empty solution with cost=0
+    return solution, solution_cost
 
 
 ############################################################################################################
@@ -133,7 +143,7 @@ def get_neighbors(state, grid):
 
     # Check valid neighbors
     for (r, q) in possible_neighbors:
-        if 0 <= r < (n - 1) and 0 <= q < (n - 1) and grid[r][q] == 0:
+        if 0 <= r < n  and 0 <= q < n  and grid[r][q] == 0:
             neighbors.append((r, q))
 
     return neighbors
@@ -158,7 +168,7 @@ def convert_hex_points(r,q):
     We assume the origin is the centre point of hexagon (0,0)
     """
     # Distance of centre point of hexagon on one row to that of next row (3/4 H)
-    HEIGHT = 2 / math.sqrt(3)
+    HEIGHT = 0.75 * (2 / math.sqrt(3)) 
 
     # Distance of centre point of hexagon on one row to that of same row (W)  
     WIDTH = 1
@@ -170,7 +180,7 @@ def convert_hex_points(r,q):
     #   BUT keep note that columns are at a slant 
     #   so we have to compensate for the shift in each row other than on row 0
     #       r * 0.5 * WIDTH --> shifts points according to which row its located in
-    h_q = r * 0.5 * WIDTH + WIDTH 
+    h_q = r * 0.5 * WIDTH + q * WIDTH 
 
     return h_r, h_q
             
