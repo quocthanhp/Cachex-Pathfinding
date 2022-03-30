@@ -49,12 +49,10 @@ def main():
     path = shortest_path(start, goal, grid)
 
     # Printing Solution
-    if not path:
-        print(0)
-    else:
-        print(len(path))
+    print(len(path))
+    if path:
         for coord in path:
-            print(coord)
+            print_coordinate(coord[0], coord[1])
 
 ############################################################################################################
 
