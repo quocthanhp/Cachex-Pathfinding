@@ -149,11 +149,11 @@ def print_board(n, board_dict, message="", ansi=False, **kwargs):
     print(output, **kwargs)
 
 class Node:
-    def __init__(self, state, parent, cost, cost_g):
+    def __init__(self, state, parent, cost_h, cost_g):
         self.state = state
         self.parent = parent
         self.cost_g = cost_g
-        self.cost = cost + cost_g
+        self.cost = cost_h + cost_g
 
 class PriorityQueue:
     def __init__(self):
@@ -162,7 +162,13 @@ class PriorityQueue:
     def add(self, node):
         self.queue.append(node)
         self.queue = sorted(self.queue, key=lambda node : node.cost) # sort based on cost of node
-
+ 
+    def contain_state(self, state):
+        for node in self.queue:
+            if node.state == state:
+                return True
+        return False
+ 
     def is_empty(self):
         return len(self.queue) == 0
 

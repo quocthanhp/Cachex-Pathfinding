@@ -7,7 +7,8 @@ This script contains the entry point to the program (the code in
 """
 
 from operator import ne
-import math 
+import math
+import queue 
 import sys
 import json
 
@@ -45,13 +46,13 @@ def main():
     goal = tuple(data["goal"])
     
     # Finding Shortest Path
-    path, path_cost = shortest_path(start, goal, grid)
+    path = shortest_path(start, goal, grid)
 
     # Printing Solution
     if not path:
         print(0)
     else:
-        print(path_cost)
+        print(len(path))
         for coord in path:
             print(coord)
 
@@ -63,7 +64,7 @@ def shortest_path(start, goal, grid):
         where our heuristic function uses the euclidean distance
     """
     # Initialise start node
-    node = Node(state=start, parent=None, cost=0, cost_g=1)
+    node = Node(state=start, parent=None, cost_h=0, cost_g=0)
     
     # Intialise frontier with start node added
     frontier = PriorityQueue()
@@ -74,7 +75,10 @@ def shortest_path(start, goal, grid):
 
     # Initialise empty solution
     solution = []
-    solution_cost = 0
+
+    # Initialise heuristic dictionary with heuristic value of start node
+    heuristic_dict = {}
+    heuristic_dict[start] = 0
     
     while not frontier.is_empty():
 
@@ -82,31 +86,28 @@ def shortest_path(start, goal, grid):
         
         # Check goal state and if solution cost is better than previously found ones
         if node.state == goal:
-            # Clear previous solution 
-            solution = []
-            solution_cost = int(node.cost) 
-            while node.parent is not None:
+            while node is not None:
                 solution.append(node.state)
                 node = node.parent
-            
-            # Make sure to add the root node into solution as well
-            solution.append(start)
-
             solution.reverse()
-            return solution, solution_cost
+            return solution
 
-        else:
-            # Mark node as already generated
-            generate.add(node.state)
+        # Mark node as already generated
+        generate.add(node.state)
        
-            # Expand current node
-            for state in get_neighbors(node.state, grid):
-                if state not in generate:
-                    neighbor = Node(state = state, parent = node, cost = heuristic(state, goal), cost_g = node.cost_g + 1)
-                    frontier.add(neighbor)
-    
-    # If no solutions just return empty solution with cost=0
-    return solution, solution_cost
+        # Expand current node
+        for state in get_neighbors(node.state, grid):
+            if state not in generate:
+                # Calculate heuristic value of node if haven't
+                if not frontier.contain_state(state):
+                    heuristic_dict[state] = heuristic(state, goal)
+                
+                # Add to frontier
+                neighbor = Node(state=state, parent=node, cost_h=heuristic_dict[state], cost_g=node.cost_g + 1)
+                frontier.add(neighbor)
+
+    # If no solutions just return empty solution 
+    return solution
 
 ############################################################################################################
 
