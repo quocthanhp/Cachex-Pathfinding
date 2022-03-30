@@ -81,7 +81,7 @@ def shortest_path(start, goal, grid):
         node = frontier.pop()
         
         # Check goal state and if solution cost is better than previously found ones
-        if node.state == goal and (node.cost < solution_cost or solution_cost == 0):
+        if node.state == goal:
             # Clear previous solution 
             solution = []
             solution_cost = int(node.cost) 
