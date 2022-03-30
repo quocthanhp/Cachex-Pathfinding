@@ -55,13 +55,12 @@ def main():
         for coord in path:
             print(coord)
 
-### CHECK IF WE CAN HAVE A NEWLINE AFTER LAST COORD
+############################################################################################################
 
-### ACCOUNT FOR WHEN NO PATH FOUND AS WELLLLLL ##############
 def shortest_path(start, goal, grid):
     """
     Finding the shortest path from start to goal using A* search 
-        where our heuristic is the euclidean distance
+        where our heuristic function uses the euclidean distance
     """
     # Initialise start node
     node = Node(state=start, parent=None, cost=0, cost_g=1)
@@ -118,10 +117,8 @@ def shortest_path(start, goal, grid):
     # If no solutions just return empty solution with cost=0
     return solution, solution_cost
 
+############################################################################################################
 
-############################################################################################################
-# DONE FUNCTIONS #
-############################################################################################################
 def heuristic(curr_state, goal_state):
     """ 
     Calculate estimated cost from current state to goal state using Euclidean distance
@@ -129,6 +126,8 @@ def heuristic(curr_state, goal_state):
     r1, q1 = convert_hex_points(curr_state[0], curr_state[1])
     r2, q2 = convert_hex_points(goal_state[0], goal_state[1])
     return math.sqrt( (r2-r1)**2 + (q2-q1)**2 )
+
+############################################################################################################
 
 def get_neighbors(state, grid):
     """ 
