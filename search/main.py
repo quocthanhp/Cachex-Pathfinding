@@ -84,7 +84,7 @@ def shortest_path(start, goal, grid):
         if node.state == goal and (node.cost < solution_cost or solution_cost == 0):
             # Clear previous solution 
             solution = []
-
+            solution_cost = int(node.cost) 
             while node.parent is not None:
                 solution.append(node.state)
                 node = node.parent
@@ -93,16 +93,7 @@ def shortest_path(start, goal, grid):
             solution.append(start)
 
             solution.reverse()
-            solution_cost = len(solution)
-
-            # Check if solution cost has lowest cost compared to other unexpanded nodes
-            final = True
-            for node in frontier.queue:
-                if(node.cost < solution_cost):
-                    final = False
-
-            if final:
-                return solution, solution_cost
+            return solution, solution_cost
 
         else:
             # Mark node as already generated
