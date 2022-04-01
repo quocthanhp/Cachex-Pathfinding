@@ -8,7 +8,6 @@ This script contains the entry point to the program (the code in
 
 from operator import ne
 import math
-import queue 
 import sys
 import json
 
@@ -68,8 +67,8 @@ def shortest_path(start, goal, grid):
     frontier = PriorityQueue()
     frontier.add(node)
 
-    # Initalise empty set storing node already generated
-    generate = set()
+    # Initalise empty set storing node already expanded
+    expand = set()
 
     # Initialise empty solution
     solution = []
@@ -95,11 +94,11 @@ def shortest_path(start, goal, grid):
             return solution
 
         # Mark node as already generated
-        generate.add(node.state)
+        expand.add(node.state)
        
         # Expand current node
         for state in get_neighbors(node.state, grid):
-            if state not in generate:
+            if state not in expand:
                 # Calculate cost from initial state to current state
                 # Assume cost between two adjacent nodes (cells) is one (move)
                 g_value = g_dict[node.state] + 1
