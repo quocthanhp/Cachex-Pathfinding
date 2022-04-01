@@ -62,7 +62,7 @@ def shortest_path(start, goal, grid):
         where our heuristic function uses the euclidean distance
     """
     # Initialise start node
-    node = Node(state=start, parent=None, cost_h=0, cost_g=0)
+    node = Node(state=start, parent=None, cost=0)
     
     # Intialise frontier with start node added
     frontier = PriorityQueue()
@@ -74,10 +74,14 @@ def shortest_path(start, goal, grid):
     # Initialise empty solution
     solution = []
 
-    # Initialise heuristic dictionary with heuristic value of start node
-    heuristic_dict = {}
-    heuristic_dict[start] = 0
-    
+    # Initialise heuristic dictionary storing estimated cost from current state to goal
+    h_dict = {}
+    h_dict[start] = 0
+
+    # Initialise start-to-current dictionary storing cost from initial state to current state
+    g_dict = {}
+    g_dict[start] = 0
+
     while not frontier.is_empty():
 
         node = frontier.pop()
@@ -96,14 +100,22 @@ def shortest_path(start, goal, grid):
         # Expand current node
         for state in get_neighbors(node.state, grid):
             if state not in generate:
-                # Calculate heuristic value of node if haven't
+                # Calculate cost from initial state to current state
+                # Assume cost between two adjacent nodes (cells) is one (move)
+                g_value = g_dict[node.state] + 1
+                
                 if not frontier.contain_state(state):
-                    heuristic_dict[state] = heuristic(state, goal)
+                    h_dict[state] = heuristic(state, goal)
+                    g_dict[state] = g_value
+                else:
+                    # Worse path
+                    if (g_dict[state] >= g_value):
+                        continue
                 
                 # Add to frontier
-                neighbor = Node(state=state, parent=node, cost_h=heuristic_dict[state], cost_g=node.cost_g + 1)
+                neighbor = Node(state=state, parent=node, cost=h_dict[state]+g_dict[state])
                 frontier.add(neighbor)
-
+                
     # If no solutions just return empty solution 
     return solution
 

@@ -149,12 +149,10 @@ def print_board(n, board_dict, message="", ansi=False, **kwargs):
     print(output, **kwargs)
 
 class Node:
-    def __init__(self, state, parent, cost_h, cost_g):
+    def __init__(self, state, parent, cost):
         self.state = state
         self.parent = parent
-        self.cost_g = cost_g
-        self.cost = cost_h + cost_g
-
+        self.cost = cost
 class PriorityQueue:
     def __init__(self):
         self.queue = []
