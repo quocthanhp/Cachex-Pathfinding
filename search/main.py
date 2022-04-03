@@ -84,7 +84,7 @@ def shortest_path(start, goal, grid):
     while not frontier.is_empty():
 
         node = frontier.pop()
-        
+
         # Check goal state 
         if node.state == goal:
             while node is not None:
@@ -103,14 +103,22 @@ def shortest_path(start, goal, grid):
                 # Assume cost between two adjacent nodes (cells) is one (move)
                 g_value = g_dict[node.state] + 1
                 
-                if not frontier.contain_state(state):
+                # Check if there exists a node in the queue already
+                #   If there is, replace the parent and new cost of node if g_value is lower (better path)
+                contained = frontier.contain_state(state)
+                if not contained[0]:
                     h_dict[state] = heuristic(state, goal)
                     g_dict[state] = g_value
                 else:
                     # Worse path
-                    if (g_dict[state] >= g_value):
+                    if (g_dict[state] <= g_value):
                         continue
-                
+
+                    # Better path
+                    else:
+                        frontier.replace_node(contained[1], node, h_dict[state] + g_value)
+                        continue
+                        
                 # Add to frontier
                 neighbor = Node(state=state, parent=node, cost=h_dict[state]+g_dict[state])
                 frontier.add(neighbor)

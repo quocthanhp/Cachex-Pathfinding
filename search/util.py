@@ -153,6 +153,11 @@ class Node:
         self.state = state
         self.parent = parent
         self.cost = cost
+
+    def replace(self, parent, cost):
+        self.parent = parent
+        self.cost = cost
+    
 class PriorityQueue:
     def __init__(self):
         self.queue = []
@@ -162,10 +167,10 @@ class PriorityQueue:
         self.queue = sorted(self.queue, key=lambda node : node.cost) # sort based on cost of node
  
     def contain_state(self, state):
-        for node in self.queue:
+        for i, node in enumerate(self.queue):
             if node.state == state:
-                return True
-        return False
+                return True, i
+        return False, -1
  
     def is_empty(self):
         return len(self.queue) == 0
@@ -178,3 +183,8 @@ class PriorityQueue:
             node = self.queue[0]
             self.queue = self.queue[1:]  
         return node
+    
+    def replace_node(self, i, parent, cost):
+        node = self.queue[i]
+        node.replace(parent, cost)
+        self.queue = sorted(self.queue, key=lambda node : node.cost) # sort based on cost of node
