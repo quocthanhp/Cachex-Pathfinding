@@ -1,7 +1,7 @@
 # Cachex pathfinding 
 
 This is a project of COMP30024 Artificial Intelligence <br />
-Apply A* Search Algorithm to find shortest path from start coordinate to end coordinate while avoiding already-occupied cells
+Apply A* Search Algorithm to find lowest-cost path from start coordinate to end coordinate while avoiding already-occupied cells
 
 # Output format
 
